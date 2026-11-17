@@ -31,15 +31,23 @@ export function Home() {
   // A link is the connection point. It carries the claim in the fragment, so
   // opening it is enough: the desk is claimed here, and the fragment is
   // removed so a reload does not claim it twice.
-  useEffect(() => {
+  //
+  // This listens for `hashchange` as well as mount. Pasting a second link into
+  // a tab that is already open is a same-document navigation — no remount, no
+  // effect — and that is exactly how a handoff is normally received.
+  const latest = useRef(row)
+  latest.current = row
+
+  const applyHandoff = useCallback(() => {
     const handoff = readHandoff(window.location.hash)
     if (!handoff) return
     const check = verdict(handoff.claim, Date.now())
     if (!check.ok) {
       setArrival(`the claim in this link was refused: ${REFUSAL[check.reason]}`)
+      window.history.replaceState(null, '', window.location.pathname)
       return
     }
-    const outcome = row.claim(handoff.desk, handoff.claim)
+    const outcome = latest.current.claim(handoff.desk, handoff.claim)
     if (outcome.ok) {
       setArrival(
         `${handoff.desk} is held by ${handoff.claim.seed} until ${new Date(
@@ -52,17 +60,18 @@ export function Home() {
       setArrival(`the claim in this link was refused: ${REFUSAL[outcome.reason]}`)
     }
     window.history.replaceState(null, '', window.location.pathname)
-    // Deliberately once per mount: the fragment is consumed, not watched.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    applyHandoff()
+    window.addEventListener('hashchange', applyHandoff)
+    return () => window.removeEventListener('hashchange', applyHandoff)
+  }, [applyHandoff])
 
   // --- keep-alive ----------------------------------------------------------
   // A real seed heartbeats every thirty seconds. The switch is the same call
   // the seed would make, so leaving it on demonstrates the lease rather than
   // describing it.
-  const latest = useRef(row)
-  latest.current = row
-
   useEffect(() => {
     if (!keepAlive) return
     const tick = () => {
