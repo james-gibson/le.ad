@@ -61,6 +61,25 @@ const manifest = {
   theme_color: '#2E4A5F',
   categories: ['productivity', 'utilities', 'developer'],
   icons,
+  /**
+   * Addresses, in the three forms a browser can hand to an app.
+   *
+   * `protocol_handlers` is the one that ships broadly (Chrome/Edge 96+): the
+   * installed desk registers for `web+desk:` and opens
+   * `web+desk:ad-03` at `./#desk=ad-03`. `%s` is replaced with everything
+   * after the scheme, so the app receives the desk id and nothing else.
+   *
+   * `launch_handler` decides what happens when the desk is already open. A
+   * desk holds one body at a time, so the answer is `focus-existing`: reuse
+   * the window instead of spawning a second row. The address then arrives
+   * through `launchQueue`, which src/lib/pwa.ts reads.
+   *
+   * `handle_links` is Chromium's same-origin link-capturing prototype. Manifests
+   * ignore members they do not know, so declaring it is a hint, not a promise.
+   */
+  protocol_handlers: [{ protocol: 'web+desk', url: './#desk=%s' }],
+  launch_handler: { client_mode: 'focus-existing' },
+  handle_links: 'preferred',
   shortcuts: [
     {
       name: 'Claim a desk',
@@ -88,8 +107,35 @@ const manifest = {
   serviceworker: { src: 'sw.js', scope: './' },
 }
 
+// The address members are checked here, before they reach a browser: a handler
+// with no `%s` opens the same page for every desk, and a handler on another
+// origin is refused at parse time with no error a user can see.
+for (const handler of manifest.protocol_handlers ?? []) {
+  if (!/^web\+[a-z0-9]+$/.test(handler.protocol)) {
+    console.error(`manifest: protocol "${handler.protocol}" must be a web+ scheme`)
+    process.exit(1)
+  }
+  if (!handler.url.includes('%s')) {
+    console.error(`manifest: ${handler.protocol} url has no %s placeholder`)
+    process.exit(1)
+  }
+  if (/^https?:/.test(handler.url)) {
+    console.error(`manifest: ${handler.protocol} url must be same-origin, not absolute`)
+    process.exit(1)
+  }
+}
+if (!['auto', 'focus-existing', 'navigate-existing', 'navigate-new'].includes(manifest.launch_handler.client_mode)) {
+  console.error(`manifest: unknown launch_handler client_mode "${manifest.launch_handler.client_mode}"`)
+  process.exit(1)
+}
+
 writeFileSync('public/manifest.json', `${JSON.stringify(manifest, null, 2)}\n`)
-console.log(`manifest: public/manifest.json — ${icons.length} icons, ${manifest.shortcuts.length} shortcuts, start_url ${manifest.start_url}`)
+console.log(
+  `manifest: public/manifest.json — ${icons.length} icons, ${manifest.shortcuts.length} shortcuts, ` +
+    `start_url ${manifest.start_url}, ${manifest.protocol_handlers.length} protocol handler(s) (${manifest.protocol_handlers
+      .map((handler) => handler.protocol)
+      .join(', ')})`,
+)
 
 // A small guard against the one mistake that is invisible until install fails:
 // an absolute URL where a relative one belongs.

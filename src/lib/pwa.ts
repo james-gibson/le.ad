@@ -68,6 +68,44 @@ export function useInstall(): InstallState {
  * Register the worker, but only in a built site. A dev server would cache the
  * modules being edited, which is the one thing a hot desk must not do.
  */
+/**
+ * The launch queue.
+ *
+ * When an installed app is opened at a URL, the browser decides what to do with
+ * that URL: open a new window, or hand it to the window that is already there.
+ * le.ad asks for the second behaviour (`launch_handler.client_mode:
+ * "focus-existing"` in the manifest) because a desk holds one body at a time —
+ * a second window would be a second row.
+ *
+ * The consequence is that the address does not arrive as `location`. It arrives
+ * as a launch parameter, once, through this queue. An app that declares
+ * `focus-existing` and does not read the queue silently loses every link the
+ * user clicks after the first one; that is the trap this function exists for.
+ *
+ * `launchQueue` is Chromium-only and only present in an installed window, so
+ * absence is the normal case, not an error.
+ */
+type LaunchParams = { targetURL?: string; files?: unknown[] }
+
+type LaunchQueue = {
+  setConsumer: (consumer: (params: LaunchParams) => void) => void
+}
+
+export function useLaunchQueue(onTarget: (url: URL) => void): void {
+  useEffect(() => {
+    const queue = (window as Window & { launchQueue?: LaunchQueue }).launchQueue
+    if (!queue || typeof queue.setConsumer !== 'function') return
+    queue.setConsumer((params) => {
+      if (!params.targetURL) return
+      try {
+        onTarget(new URL(params.targetURL))
+      } catch {
+        // A malformed target is not worth a broken install.
+      }
+    })
+  }, [onTarget])
+}
+
 export function registerWorker(): void {
   if (!import.meta.env.PROD) return
   if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) return

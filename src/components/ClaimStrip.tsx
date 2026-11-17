@@ -167,6 +167,26 @@ export function ClaimStrip({
         </div>
       </Row>
 
+      {/* The address of the aimed desk, shown in all three forms it can be
+          spoken in. This is the exposure: an address is a link, a fragment and
+          a scheme, and all three adopt the same desk. */}
+      {target ? (
+        <p className="address">
+          <span className="address__label">address</span>
+          <a className="address__link" href={`${import.meta.env.BASE_URL}ad/${target}/`}>
+            /ad/{target}/
+          </a>
+          <span className="address__sep" aria-hidden="true">
+            ·
+          </span>
+          <code className="address__code">#{'desk=' + target}</code>
+          <span className="address__sep" aria-hidden="true">
+            ·
+          </span>
+          <code className="address__code">web+desk:{target}</code>
+        </p>
+      ) : null}
+
       <Stack gap={1} className="strip__note" aria-live="polite">
         {error ? (
           <Text tone="accent" size="small" as="p" className="strip__error">

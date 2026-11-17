@@ -41,6 +41,16 @@
       "purpose": "maskable"
     }
   ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+desk",
+      "url": "./#desk=%s"
+    }
+  ],
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "handle_links": "preferred",
   "shortcuts": [
     {
       "name": "Claim a desk",

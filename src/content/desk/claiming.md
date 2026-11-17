@@ -62,6 +62,24 @@ there. A Pages host never sees a fragment, so the handoff costs no request and l
 If the link is older than the lease, it is refused as **stale**. That is deliberate: a claim
 link is a ticket, not a key, and a ticket is worth what its clock says.
 
+## The address
+
+A claim link carries a claim, so it *takes* a desk. An address carries a desk and no claim, so it
+only *offers* one:
+
+```text
+/ad/ad-03/        #desk=ad-03        web+desk:ad-03
+```
+
+Opening any of them aims the strip at that desk and puts the cursor in the seed field. Nothing is
+claimed until a seed is named and the desk is taken — which is what makes an address safe to
+paste into a room: the reader still has to adopt it.
+
+The page form is a real route with its own shell and title, so a desk can be linked, bookmarked
+and unfurled like any other page. The scheme form is what the installed app registers for; see
+[Installing the desk](/desk/install) for what each manifest member does and which browsers honour
+it.
+
 ## Keeping a desk
 
 The switch under the row, *heartbeat while this tab is open*, sends the same heartbeat a seed

@@ -62,6 +62,53 @@ to name the hashed assets that were just built. It does three things:
 The version is the build's commit. There is no cache name to edit by hand, and the publish
 guard checks that the worker names the bundle that actually shipped.
 
+## Addresses
+
+An installed desk that cannot be linked to is a desk in a locked room. The manifest therefore
+declares what the app will open, and the app has to actually open it — declaring a handler
+without reading the address is the most common way this feature ships broken.
+
+A desk has three addresses, and all three mean the same thing: **this desk, not this claim**.
+
+```text
+https://james-gibson.github.io/le.ad/ad/ad-03/   a real page, a real 200
+https://james-gibson.github.io/le.ad/#desk=ad-03 a fragment: no request leaves the page
+web+desk:ad-03                                   a scheme the installed app registers for
+```
+
+| manifest member | what it does | support |
+| --- | --- | --- |
+| `protocol_handlers` | registers `web+desk`, so `web+desk:ad-03` opens `./#desk=ad-03` | Chromium 96+, desktop |
+| `launch_handler` | `focus-existing`: deliver the address to the window that is already open | Chromium 110+ |
+| `handle_links` | `preferred`: capture same-origin navigations in the app | Chromium prototype |
+
+```json
+"protocol_handlers": [{ "protocol": "web+desk", "url": "./#desk=%s" }],
+"launch_handler": { "client_mode": "focus-existing" },
+"handle_links": "preferred"
+```
+
+Three details decide whether this works or merely parses:
+
+- **`%s` is the whole address.** `web+desk:ad-03` arrives as `./#desk=ad-03`; the app parses the
+  fragment with the same `readAddress` it uses for a pasted link. A handler without `%s` opens
+  the same page for every desk, so the build refuses one.
+- **`focus-existing` means `launchQueue`.** When the browser reuses the window, the address does
+  not arrive in `location` — it arrives once, as a launch parameter. `src/lib/pwa.ts` reads it,
+  navigates to `/ad/<id>`, and the rest of the page follows from that route. Without the
+  consumer, the first link works and every later one is silently dropped.
+- **`url_handlers` is not used.** It is the older URL-handling proposal, now obsolete in favour
+  of link capturing and `scope_extensions`; a manifest that declares it is describing a feature
+  no browser implements.
+
+What adopting looks like: the strip is aimed at that desk, the seed field is focused, and the
+page says so — `This is ad-04. Adopt it, or take another.` The claim is still the strip's to
+make. That is the difference this feature exists to keep: an **address** names a desk, a **claim
+link** names a lease, and the second one is the only one that takes something.
+
+Firefox and Safari do not implement any of the three members. They ignore them, the page still
+works, and the address is still a link — which is the fallback the whole feature is built on.
+
 ## What install does not do
 
 - It does not move the desk's state to the cloud. The row is still in `localStorage` and the

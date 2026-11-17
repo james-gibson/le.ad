@@ -142,9 +142,19 @@ const contentFiles = (await walk('src/content')).filter((file) => file.endsWith(
 if (contentFiles.length === 0) fail('content', 'src/content/**/*.md matched nothing')
 
 const sections = [...new Set(contentFiles.map((file) => relative('src/content', file).split('/')[0]))]
+
+// Desk addresses are routes too. Read from the protocol module so a seventh
+// desk cannot ship without its own 200.
+const deskIds = [
+  ...new Set(
+    [...(await readText('src/lib/desk.ts')).matchAll(/'(ad-\d{2})'/g)].map((match) => match[1]),
+  ),
+]
+
 const routes = [
   'design',
   'palette',
+  ...deskIds.map((id) => `ad/${id}`),
   ...sections,
   ...contentFiles.map((file) => relative('src/content', file).replace(/\.md$/, '')),
 ]
@@ -257,6 +267,55 @@ if (!manifestSource) {
     if (!sizes.has('512x512')) fail('manifest', 'manifest.json has no 512x512 icon')
     for (const shortcut of manifest.shortcuts ?? []) {
       if (!shortcut.url) fail('manifest', `shortcut "${shortcut.name}" has no url`)
+    }
+
+    // --- addresses -------------------------------------------------------
+    // A protocol handler with no `%s` opens the same page for every desk, and
+    // one whose fragment key the app does not parse is a handler that silently
+    // does nothing. Both are invisible in a browser until someone tries it.
+    const handlers = manifest.protocol_handlers ?? []
+    if (!handlers.length) {
+      fail('manifest', 'manifest.json declares no protocol_handlers — the installed app cannot be addressed')
+    }
+    for (const handler of handlers) {
+      if (!/^web\+[a-z0-9]+$/.test(handler.protocol ?? '')) {
+        fail('manifest', `protocol handler "${handler.protocol}" is not a web+ scheme`)
+      }
+      if (!String(handler.url ?? '').includes('%s')) {
+        fail('manifest', `${handler.protocol} has no %s placeholder to receive the address`)
+      }
+      if (/^https?:/.test(String(handler.url ?? ''))) {
+        fail('manifest', `${handler.protocol} url is absolute; it must stay same-origin`)
+      }
+      const fragment = String(handler.url ?? '').split('#')[1] ?? ''
+      if (!fragment.startsWith('desk=')) {
+        fail(
+          'manifest',
+          `${handler.protocol} opens "${handler.url}", which the app does not read as a desk address ` +
+            '(src/lib/desks.ts parses #desk=)',
+        )
+      }
+    }
+
+    const mode = manifest.launch_handler?.client_mode
+    if (!['auto', 'focus-existing', 'navigate-existing', 'navigate-new'].includes(mode)) {
+      fail('manifest', `launch_handler.client_mode is "${mode}" — the app cannot say how an address is delivered`)
+    }
+    // `focus-existing` without a launchQueue consumer is a page that drops the
+    // second address it is handed. The consumer lives in src/lib/pwa.ts.
+    if (mode === 'focus-existing') {
+      const pwa = await readText('src/lib/pwa.ts').catch(() => '')
+      if (!/launchQueue/.test(pwa)) {
+        fail('manifest', 'focus-existing is declared but src/lib/pwa.ts never reads launchQueue')
+      }
+      const home = await readText('src/pages/Home.tsx').catch(() => '')
+      if (!/useLaunchQueue/.test(home)) {
+        fail('manifest', 'focus-existing is declared but the row never consumes the launch queue')
+      }
+    }
+
+    if (manifest.handle_links && !['auto', 'preferred', 'not-preferred'].includes(manifest.handle_links)) {
+      fail('manifest', `handle_links is "${manifest.handle_links}", which is not a known value`)
     }
   }
 }

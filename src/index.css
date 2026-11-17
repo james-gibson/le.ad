@@ -270,6 +270,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
+  justify-content: space-between;
   gap: 0.45rem;
   margin: 0 0 1.5rem;
   padding: 0.7rem 0.9rem;
@@ -338,8 +339,47 @@
 }
 
 .strip__note {
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;
   min-height: 1.3rem;
+}
+
+/* The three ways to say the same desk. */
+.address {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.45rem;
+  margin: 0.9rem 0 0;
+  font-size: 0.72rem;
+  color: var(--le-smoke-dim);
+}
+
+.address__label {
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.64rem;
+  color: var(--le-smoke-dim);
+}
+
+.address__link {
+  color: var(--le-pink-ink);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--le-pink) 45%, transparent);
+}
+
+.address__link:hover {
+  color: var(--le-smoke);
+}
+
+.address__code {
+  font-size: 0.72rem;
+  color: var(--le-smoke-dim);
+  background: var(--le-panel-2);
+  border-color: var(--le-line-soft);
+}
+
+.address__sep {
+  color: var(--le-line);
 }
 
 .strip__error {

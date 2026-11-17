@@ -17,9 +17,12 @@ stale.
   is its specification; `scripts/desk-check.ts` runs the implementation against the same
   fourteen scenarios. The page renders the machine; it does not decide anything the machine
   would not.
-- **Installable.** A generated `manifest.json` with 192, 512 and maskable icons drawn by
-  `scripts/icons.mjs`, and a service worker written by `scripts/postbuild.mjs` from the hashed
-  assets it just built, so the installed desk opens offline.
+- **Installable, and addressable.** A generated `manifest.json` with 192, 512 and maskable icons
+  drawn by `scripts/icons.mjs`, and a service worker written by `scripts/postbuild.mjs` from the
+  hashed assets it just built, so the installed desk opens offline. The manifest also declares
+  `protocol_handlers` (`web+desk:ad-03`), `launch_handler: focus-existing` and `handle_links`, so
+  a URL addressed to the app opens the desk it names — and `src/lib/pwa.ts` reads `launchQueue`,
+  which is the half that makes reusing a window actually work.
 - **Parts, not a framework.** The UI takes [tuiparts.sh](https://tuiparts.sh) at its word —
   behaviour in typed components, presentation in a token file you own. No CSS framework, no
   theme runtime. See `/docs/ui`.
@@ -51,7 +54,8 @@ src/lib/desks.ts                 persistence, the clock, the handoff link
 src/ui/theme.ts                  the tuiparts token contract, two registered themes
 src/ui/parts.tsx                 Box, Row, Stack, Text, Panel, Badge, Dot
 src/ui/controls.tsx              Button, Field, Input, Select, Switch, Tabs
-src/pages/Home.tsx               the row, the claim strip, the record
+src/lib/pwa.ts                   the worker, the install prompt, the launch queue
+src/pages/Home.tsx               the row, the claim strip, the record, adopting an address
 src/pages/Design.tsx             the live catalogue (every part the site ships)
 src/pages/Palette.tsx            the measured palette
 src/content/<section>/<slug>.md  pages; the file path is the URL

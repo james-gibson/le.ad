@@ -40,6 +40,28 @@ names an icon it did not draw, a worker that does not precache the shipped bundl
 that drifted, or content that never reached the bundle. Do not weaken a check to make a build
 pass; fix the output.
 
+## Addresses
+
+A desk has three addresses and they all mean the same thing — this desk, not this claim:
+
+```text
+/ad/ad-03/        #desk=ad-03        web+desk:ad-03
+```
+
+- `/ad/:id` is a real route with its own prerendered shell. It ranks above `:section/:slug`, so a
+  desk id can never be read as a page slug. `scripts/postbuild.mjs` and
+  `scripts/verify-publish.mjs` read the ids out of `src/lib/desk.ts`; a seventh desk without its
+  shell fails the build.
+- `protocol_handlers` maps `web+desk:<id>` to `./#desk=%s`. The guard checks the `%s` and checks
+  that the fragment starts with `desk=`, because a handler the app cannot parse is a handler that
+  silently does nothing.
+- `launch_handler: focus-existing` is only honest if `src/lib/pwa.ts` consumes `launchQueue`.
+  The guard checks that too: with a reused window the address never reaches `location`.
+- `url_handlers` is obsolete (superseded by link capturing and `scope_extensions`). Do not add it.
+
+Adopting is not claiming: an address aims the strip and focuses the seed field, and the claim is
+still the strip's to make. Keep that boundary.
+
 ## Content
 
 - One page = one file: `src/content/<section>/<slug>.md`, frontmatter `title` + `description`

@@ -16,6 +16,7 @@ import { renderToString } from 'react-dom/server'
 import { StaticRouter } from 'react-router-dom'
 import { App } from '../src/App'
 import { PAGES, SECTIONS } from '../src/lib/content'
+import { DESK_IDS } from '../src/lib/desk'
 
 const BASE = '/le.ad'
 const OUT = 'dist/.prerender'
@@ -25,6 +26,11 @@ const routes = [
   { file: 'design', path: '/design' },
   { file: 'palette', path: '/palette' },
   ...SECTIONS.map((section) => ({ file: section.id, path: `/${section.id}` })),
+  // A desk address is a page: /ad/ad-03/ answers with the row already aimed at
+  // that desk, so the answer is in the initial HTML rather than after hydration.
+  // Flattened file name: postbuild reads this directory in one pass and maps
+  // `a__b` back to the route `a/b`.
+  ...DESK_IDS.map((id) => ({ file: `ad__${id}`, path: `/ad/${id}` })),
   ...PAGES.map((page) => ({
     file: `${page.section}/${page.slug}`.replace(/\//g, '__'),
     path: `/${page.section}/${page.slug}`,

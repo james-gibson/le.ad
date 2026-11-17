@@ -14,11 +14,14 @@ import { renderToString } from 'react-dom/server'
 import { MemoryRouter } from 'react-router-dom'
 import { App } from '../src/App'
 import { PAGES } from '../src/lib/content'
+import { DESK_IDS } from '../src/lib/desk'
 
 const routes = [
   '/',
   '/design',
   '/palette',
+  `/ad/${DESK_IDS[2]}`,
+  '/ad/ad-99',
   ...PAGES.map((page) => `/${page.section}/${page.slug}`),
   '/this-route-does-not-exist',
 ]

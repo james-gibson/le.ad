@@ -56,9 +56,19 @@ const sectionDirs = (await readdir(CONTENT, { withFileTypes: true }))
   .filter((entry) => entry.isDirectory())
   .map((entry) => entry.name)
 
+// Desk ids are read from the protocol module rather than duplicated here: the
+// guard fails the build if a desk has no shell, so a drift shows up as a red
+// build instead of a 404 that only a reader with the link would find.
+const deskIds = [
+  ...new Set(
+    [...(await readFile('src/lib/desk.ts', 'utf8')).matchAll(/'(ad-\d{2})'/g)].map((match) => match[1]),
+  ),
+]
+
 const routes = [
   'design',
   'palette',
+  ...deskIds.map((id) => `ad/${id}`),
   ...sectionDirs,
   ...(await walk(CONTENT))
     .filter((f) => f.endsWith('.md'))
@@ -105,6 +115,9 @@ const titleFor = (route) => {
   if (route === 'design') return 'Design · le.ad'
   if (route === 'palette') return 'Palette · le.ad'
   if (route === '404') return 'Not found · le.ad'
+  // A desk address is its own page, so it gets its own title: a link to ad-03
+  // should say ad-03 in the tab, the history entry and the unfurl.
+  if (/^ad\/ad-\d{2}$/.test(route)) return `${route.split('/')[1]} · le.ad`
   const section = route.split('/')[0]
   if (!route.includes('/') && section) {
     return `${SECTION_LABELS[section] ?? section} · le.ad`
@@ -232,6 +245,15 @@ for (const section of Object.keys(SECTION_LABELS)) {
 }
 
 lines.push(
+  '## Addresses',
+  '',
+  'Every desk is addressable three ways, and all three adopt the same desk — they name the',
+  'desk, not a claim:',
+  '',
+  ...deskIds.map((id) => `- ${SITE}/ad/${id}/  ·  ${SITE}/#desk=${id}  ·  web+desk:${id}`),
+  '',
+  'A claim link is different: it carries a claim token and opens the desk already held.',
+  '',
   '## The isotope',
   '',
   'le.ad introduces the desk-claim isotope and proposes it upstream. The feature file is',
@@ -241,6 +263,7 @@ lines.push(
   '',
   '## For agents',
   '',
+  `- Adopting a desk by address: ${SITE}/ad/ad-03/ (or #desk=ad-03, or web+desk:ad-03)`,
   `- The protocol, in one page: ${SITE}/isotope/hot-desk/`,
   `- How to claim: ${SITE}/desk/claiming/`,
   `- What a hot desk is: ${SITE}/desk/what-a-desk-is/`,

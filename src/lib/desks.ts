@@ -202,6 +202,40 @@ export function useDeskRow(): DeskRow {
 
 export type Handoff = { desk: DeskId; token: string; claim: Claim }
 
+/**
+ * The desk a URL addresses.
+ *
+ * Three forms resolve to the same desk, because a desk should be addressable
+ * from wherever it is mentioned:
+ *
+ *   https://…/le.ad/ad-03/        a real path, a real 200, an ordinary link
+ *   https://…/le.ad/#desk=ad-03   a fragment, for a paste that never leaves the page
+ *   web+desk:ad-03                a scheme the installed app registers for
+ *
+ * This is the *adoption* address: it says which desk, not which claim. A URL
+ * that carries a claim is a handoff, and `readHandoff` owns that.
+ */
+export function deskFromUrl(url: URL): DeskId | null {
+  const fromHash = new URLSearchParams(url.hash.replace(/^#/, '')).get('desk')
+  if (fromHash && DESK_IDS.includes(fromHash as DeskId)) return fromHash as DeskId
+
+  const segments = url.pathname.split('/').filter(Boolean)
+  const last = segments[segments.length - 1]
+  if (last && DESK_IDS.includes(last as DeskId)) return last as DeskId
+  return null
+}
+
+/** `#desk=ad-03` with no claim: an address, not a handoff. */
+export function readAddress(hash: string): DeskId | null {
+  const raw = hash.startsWith('#') ? hash.slice(1) : hash
+  if (!raw) return null
+  const params = new URLSearchParams(raw)
+  if (params.get('claim')) return null
+  const desk = params.get('desk')
+  return desk && DESK_IDS.includes(desk as DeskId) ? (desk as DeskId) : null
+}
+
+
 export function readHandoff(hash: string): Handoff | null {
   const raw = hash.startsWith('#') ? hash.slice(1) : hash
   if (!raw) return null
