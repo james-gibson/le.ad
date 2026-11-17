@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && node scripts/icons.mjs && node scripts/manifest.mjs && node scripts/tokens.mjs && vite build && vite build --ssr scripts/prerender.tsx --outDir .prerender --emptyOutDir && node .prerender/prerender.js && node scripts/postbuild.mjs && node scripts/contrast.mjs && node scripts/a11y.mjs dist --fail-on high && node scripts/overflow.mjs && npm run check:desk && node scripts/verify-publish.mjs",
-    "preview": "vite preview",
+    "preview": "vite preview --base=/le.ad/",
     "smoke": "vite build --ssr scripts/smoke.tsx --outDir .smoke --emptyOutDir && node .smoke/smoke.js",
     "guard": "node scripts/verify-publish.mjs",
     "contrast": "node scripts/contrast.mjs",
