@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>le.ad — an empty hot desk</title>
+    <meta
+      name="description"
+      content="le.ad is an empty desk: a le.gume seed that holds no content and one claim at a time. Active seeds dock here, take a lease, and leave a link behind."
+    />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#2E4A5F" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="le.ad" />
+    <link rel="manifest" href="%BASE_URL%manifest.json" />
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+    <link rel="apple-touch-icon" href="%BASE_URL%icons/icon-192.png" />
+    <link rel="canonical" href="https://james-gibson.github.io/le.ad/" />
+    <meta property="og:title" content="le.ad — an empty hot desk" />
+    <meta
+      property="og:description"
+      content="A blank canvas that is a connection point: six desks, one claim at a time, a lease that runs out."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://james-gibson.github.io/le.ad/" />
+    <meta property="og:image" content="https://james-gibson.github.io/le.ad/icons/icon-512.png" />
+    <style>
+      /* The first paint is the wall, not a white rectangle. It is also the
+         background_color in manifest.json, so the installed window opens on
+         the same colour the browser tab does. */
+      html {
+        background: #2e4a5f;
+      }
+    </style>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "le.ad",
+        "alternateName": "active desk",
+        "url": "https://james-gibson.github.io/le.ad/",
+        "description": "An empty hot desk: a connection point for active le.gume seeds, and the first home of the desk-claim isotope.",
+        "inLanguage": "en",
+        "isAccessibleForFree": true,
+        "license": "https://www.gnu.org/licenses/agpl-3.0.html"
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

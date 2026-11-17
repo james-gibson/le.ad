@@ -1,0 +1,42 @@
+{
+  "name": "le-ad",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "le.ad \u2014 an empty hot desk. A le.gume seed that is a connection point for active seeds, and the first home of the desk-claim isotope.",
+  "homepage": "https://james-gibson.github.io/le.ad/",
+  "license": "AGPL-3.0-only",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && node scripts/icons.mjs && node scripts/manifest.mjs && node scripts/tokens.mjs && vite build && vite build --ssr scripts/prerender.tsx --outDir .prerender --emptyOutDir && node .prerender/prerender.js && node scripts/postbuild.mjs && node scripts/contrast.mjs && node scripts/a11y.mjs dist --fail-on high && node scripts/overflow.mjs && npm run check:desk && node scripts/verify-publish.mjs",
+    "preview": "vite preview",
+    "smoke": "vite build --ssr scripts/smoke.tsx --outDir .smoke --emptyOutDir && node .smoke/smoke.js",
+    "guard": "node scripts/verify-publish.mjs",
+    "contrast": "node scripts/contrast.mjs",
+    "a11y": "node scripts/a11y.mjs dist --fail-on high",
+    "overflow": "node scripts/overflow.mjs",
+    "check": "tsc --noEmit",
+    "icons": "node scripts/icons.mjs",
+    "manifest": "node scripts/manifest.mjs",
+    "isotope": "python3 scripts/validate-spec.py features/hot-desk.feature --brine \"$HOME/projects/kb/projects/scripts/brine\"",
+    "check:desk": "vite build --ssr scripts/desk-check.ts --outDir .check --emptyOutDir && node .check/desk-check.js"
+  },
+  "dependencies": {
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-markdown": "10.1.0",
+    "react-router-dom": "7.18.5",
+    "remark-gfm": "4.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "6.3.0",
+    "typescript": "5.9.3",
+    "vite": "8.3.8"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

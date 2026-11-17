@@ -1,0 +1,70 @@
+{
+  "id": "/le.ad/",
+  "name": "le.ad — an empty hot desk",
+  "short_name": "le.ad",
+  "description": "An empty hot desk: six desks, one claim at a time, a lease that runs out. A connection point for active seeds.",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "any",
+  "background_color": "#2E4A5F",
+  "theme_color": "#2E4A5F",
+  "categories": [
+    "productivity",
+    "utilities",
+    "developer"
+  ],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Claim a desk",
+      "short_name": "Claim",
+      "description": "Take an empty desk for one lease.",
+      "url": "./#claim-heading"
+    },
+    {
+      "name": "The isotope",
+      "short_name": "Isotope",
+      "description": "The desk-claim isotope, its rules and its id.",
+      "url": "./isotope/hot-desk"
+    },
+    {
+      "name": "Design",
+      "short_name": "Design",
+      "description": "The parts this desk ships, live.",
+      "url": "./design"
+    }
+  ],
+  "prefer_related_applications": false,
+  "screenshots": [],
+  "serviceworker": {
+    "src": "sw.js",
+    "scope": "./"
+  }
+}
