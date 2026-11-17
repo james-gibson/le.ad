@@ -43,7 +43,7 @@ export function Home() {
     if (!handoff) return
     const check = verdict(handoff.claim, Date.now())
     if (!check.ok) {
-      setArrival(`the claim in this link was refused: ${REFUSAL[check.reason]}`)
+      setArrival(`refused — ${REFUSAL[check.reason]}`)
       window.history.replaceState(null, '', window.location.pathname)
       return
     }
@@ -57,7 +57,7 @@ export function Home() {
     } else if (outcome.reason === 'held' && outcome.desk.holder?.seed === handoff.claim.seed) {
       setArrival(`${handoff.desk} is already yours. The lease is running.`)
     } else {
-      setArrival(`the claim in this link was refused: ${REFUSAL[outcome.reason]}`)
+      setArrival(`refused — ${REFUSAL[outcome.reason]}`)
     }
     window.history.replaceState(null, '', window.location.pathname)
   }, [])
