@@ -82,9 +82,10 @@ you stops lighting.
 
 ## Status: proposed, not adopted
 
-This is the first home of the isotope, not its final one. The proposal is to upstream it as
-`isotope/features/hot-desk.feature` in the isotope repository, with the constant moved to
-`trust.go` beside the rung ceilings. Until that lands:
+This is the first home of the isotope, not its final one. The proposal is filed as
+[isotope#46](https://github.com/james-gibson/isotope/issues/46): upstream the feature as
+`isotope/features/hot-desk.feature`, and move the constant to `trust.go` beside the rung
+ceilings. Until that lands:
 
 - the feature file lives here, validated against the real canon;
 - the isotope id above is the one this file produces;

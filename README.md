@@ -75,9 +75,10 @@ canon      72 tokens, 14 parts
 
 The rule the lattice did not have: a desk that is *held* needs a clock, and silence has to
 return it. Rung 0 may connect and may not hold; a distance past the rung ceiling is refused as
-drift; a lease runs for ninety seconds and a heartbeat renews it. The proposal is to upstream
-the feature as `isotope/features/hot-desk.feature`, with the constant beside the rung ceilings
-in `trust.go`. Until that lands, nothing else should depend on the shape of a claim.
+drift; a lease runs for ninety seconds and a heartbeat renews it. The proposal is filed as
+[isotope#46](https://github.com/james-gibson/isotope/issues/46): upstream the feature as
+`isotope/features/hot-desk.feature`, with the constant beside the rung ceilings in `trust.go`.
+Until that lands, nothing else should depend on the shape of a claim.
 
 ## Deploy
 
