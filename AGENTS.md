@@ -71,6 +71,9 @@ it to read a record, and this desk asks it to **take a desk**. Same door, differ
 - `SITE.action` is this seed's verb and its address (`take a desk`, `ad-01`).
 - `SITE.handoff` is the door itself, unchanged in shape so an agent that knows the family can find
   it. It is printed once, and the guard counts that it stays one.
+- The door says how to *publish*, not how to build: push to main and the workflow runs `npm ci &&
+  npm run build`. A local build is optional, and for a desk it is usually unnecessary — there is
+  nothing to compile to take one.
 - The footer puts the verb above the description and the door below it. A visitor gets a desk; an
   agent gets a path.
 

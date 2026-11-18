@@ -14,5 +14,5 @@ export const SITE = {
   },
   /** The one door for an agent. There is exactly one; the guard counts it. */
   handoff:
-    'Read https://james-gibson.github.io/le.ad/llms.txt — the desk, its protocol, and the build command.',
+    'Read https://james-gibson.github.io/le.ad/llms.txt — the protocol and the publish path. Nothing is built to take a desk; the deploy builds itself.',
 } as const

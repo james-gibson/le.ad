@@ -210,7 +210,13 @@ if (!llms) {
     const route = relative('src/content', file).replace(/\.md$/, '')
     if (!llms.includes(`/${route}/)`)) fail('llms', `dist/llms.txt does not list /${route}`)
   }
-  for (const anchor of ['## For agents', '## Invariants', '## Build and verify', '## The isotope']) {
+  for (const anchor of [
+    '## Publish',
+    '## For agents',
+    '## Invariants',
+    '## Build and verify',
+    '## The isotope',
+  ]) {
     if (!llms.includes(anchor)) fail('llms', `dist/llms.txt is missing the "${anchor}" section`)
   }
 }
