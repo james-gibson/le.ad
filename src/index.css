@@ -1140,6 +1140,38 @@
   color: var(--le-smoke);
 }
 
+/* The seed's own call to action sits above the description, because the verb is
+   what a reader came for: take a desk. The door to the machine entry is below. */
+.footer__cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--le-smoke-dim);
+}
+
+.footer__cta-link {
+  color: var(--le-pink-ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--le-pink);
+}
+
+.footer__cta-link:hover {
+  color: var(--le-smoke);
+}
+
+.footer__cta-dim {
+  color: var(--le-smoke-dim);
+}
+
+.footer__cta code {
+  font-size: 0.74rem;
+  color: var(--le-smoke);
+  background: var(--le-panel-2);
+  border-color: var(--le-line-soft);
+}
+
 .footer__links {
   display: flex;
   flex-wrap: wrap;

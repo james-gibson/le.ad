@@ -5,6 +5,16 @@ export function SiteFooter() {
   return (
     <footer className="footer">
       <div className="footer__row">
+        <p className="footer__line footer__cta">
+          <Link to={`/ad/${SITE.action.desk}`} className="footer__cta-link">
+            {SITE.action.label} ↗
+          </Link>{' '}
+          <span className="footer__cta-dim">or address it directly:</span>{' '}
+          <code>
+            {import.meta.env.BASE_URL}ad/{SITE.action.desk}/
+          </code>{' '}
+          <span className="footer__cta-dim">·</span> <code>web+desk:{SITE.action.desk}</code>
+        </p>
         <p className="footer__line">
           <span className="footer__key">le.ad</span> — an empty hot desk. Six desks, one claim
           each, a ninety-second lease.

@@ -62,6 +62,18 @@ A desk has three addresses and they all mean the same thing — this desk, not t
 Adopting is not claiming: an address aims the strip and focuses the seed field, and the claim is
 still the strip's to make. Keep that boundary.
 
+## The agent door is the seed's, not the starter's
+
+le.gume's rule is one door for an agent, and the door is `llms.txt`. Copying the starter's
+sentence through that door is the mistake: `le.gume` asks an agent to clone it, `le.railhead` asks
+it to read a record, and this desk asks it to **take a desk**. Same door, different verb.
+
+- `SITE.action` is this seed's verb and its address (`take a desk`, `ad-01`).
+- `SITE.handoff` is the door itself, unchanged in shape so an agent that knows the family can find
+  it. It is printed once, and the guard counts that it stays one.
+- The footer puts the verb above the description and the door below it. A visitor gets a desk; an
+  agent gets a path.
+
 ## Content
 
 - One page = one file: `src/content/<section>/<slug>.md`, frontmatter `title` + `description`
